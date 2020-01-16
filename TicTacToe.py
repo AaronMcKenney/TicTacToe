@@ -13,6 +13,27 @@ PM_O_STR = 'O'
 #Player/Mark ID to Str Array
 PM_ID_TO_STR = [PM___STR, PM_X_STR, PM_O_STR]
 
+def ParseCommandLineArgs():
+	prog_desc = ('It\'s Tic-tac-toe... yup.')
+	mnk_help = ('Enter 3 numbers separted by spaces, which represent: '
+		'Width of the board, '
+		'Height of the board, '
+		'Number of sequential marks needed to win. '
+		'Default values are: 3 3 3')
+	
+	parser = argparse.ArgumentParser(description = prog_desc)
+	parser.add_argument('--mnk', '-n', nargs = 3, type = int, help = mnk_help)
+	parser.set_defaults(mnk = [3, 3, 3])
+	
+	args = parser.parse_args()
+	(width, height, n) = (args.mnk[0], args.mnk[1], args.mnk[2])
+	
+	if width <= 0 or height <= 0 or n <= 0:
+		print('Width, height, and num arguments must be at least 1.')
+		return None
+	
+	return (width, height, n)
+
 def BoardHasEmptySpaces(board):
 	for row in board:
 		for space in row:
@@ -133,12 +154,14 @@ def GameLoop(board, n):
 	PrintBoard(board)
 
 def Main():
-	board_width = 3
-	board_height = 3
-	n = 3
-	board = [[]] * board_height
-	for i in range(board_height):
-		board[i] = [PM_]*board_width
+	args = ParseCommandLineArgs()
+	if args == None:
+		return
+	(width, height, n) = args
+	
+	board = [[]] * width
+	for i in range(height):
+		board[i] = [PM_]*width
 	
 	print('Welcome to TicTacToe.py! Take turns filling the grid by specifying the coordinates of the space as "x,y". X moves first')
 	
